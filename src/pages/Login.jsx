@@ -9,8 +9,22 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useRef } from "react";
 
-function Login() {
+export default function Login() {
+  const usernameRef = useRef(null);
+  const passwordRef = useRef(null);
+
+  const handleLoginSubmit = () => {
+    const username = usernameRef.current?.value;
+    const password = passwordRef.current?.value;
+
+    if (!username || !password) {
+      return;
+    }
+    console.log({ username, password });
+  };
+
   return (
     <section className="flex items-center justify-center h-screen">
       <Card className="w-full max-w-sm">
@@ -24,24 +38,29 @@ function Login() {
           <div className="grid gap-2">
             <Label htmlFor="username">Username</Label>
             <Input
-              id="username"
+              ref={usernameRef}
               type="text"
-              placeholder="username"
+              placeholder="Enter the Username"
               required
               autoFocus
             />
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
+            <Input
+              ref={passwordRef}
+              type="password"
+              placeholder="Enter the Password"
+              required
+            />
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full">Sign in</Button>
+          <Button className="w-full" onClick={handleLoginSubmit}>
+            Sign in
+          </Button>
         </CardFooter>
       </Card>
     </section>
   );
 }
-
-export default Login;
