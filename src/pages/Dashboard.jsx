@@ -1,4 +1,3 @@
-// import Image from "next/image";
 import {
   ChevronLeft,
   ChevronRight,
@@ -11,8 +10,8 @@ import {
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
-
 import { Button } from "@/components/ui/button";
+
 import {
   Card,
   CardContent,
@@ -21,6 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -30,11 +30,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
 } from "@/components/ui/pagination";
+
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 
@@ -46,8 +48,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Dashboard() {
   return (

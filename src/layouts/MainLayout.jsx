@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,28 +10,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
+import { CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -41,12 +29,12 @@ import {
   Package2,
   PanelLeft,
   Search,
-  Settings,
-  ShoppingCart,
   Users2,
   Menu,
 } from "lucide-react";
+
 import { Outlet } from "react-router-dom";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 
 function MainLayout() {
   return (
@@ -161,7 +149,7 @@ function MainLayout() {
               </nav>
             </SheetContent>
           </Sheet>
-          <CardTitle className="ml-3">Good Morning !</CardTitle>
+          <CardTitle className="ml-3">Good Morning 🌞!</CardTitle>
           {/* <Breadcrumb className="hidden md:flex">
             <BreadcrumbList>
               <BreadcrumbItem>
@@ -187,6 +175,7 @@ function MainLayout() {
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
             />
           </div>
+          <ModeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

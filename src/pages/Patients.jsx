@@ -1,5 +1,3 @@
-import { Badge } from "@/components/ui/badge";
-
 import {
   Card,
   CardContent,
@@ -7,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import {
   Table,
   TableBody,
@@ -15,9 +14,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { fetchPatients } from "@/http/api";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Patients() {
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["patients"],
+    queryFn: fetchPatients,
+    staleTime: 10000,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
     <main className="grid flex gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
@@ -32,40 +48,41 @@ export default function Patients() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Customer</TableHead>
+                      <TableHead>Name</TableHead>
                       <TableHead className="hidden sm:table-cell">
-                        Type
+                        Mobile Number
                       </TableHead>
                       <TableHead className="hidden sm:table-cell">
-                        Status
+                        Email
+                      </TableHead>
+                      <TableHead className="hidden sm:table-cell">
+                        Gender
                       </TableHead>
                       <TableHead className="hidden md:table-cell">
-                        Date
+                        Address
                       </TableHead>
-                      <TableHead className="text-right">Amount</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow className="bg-accent">
-                      <TableCell>
-                        <div className="font-medium">Liam Johnson</div>
-                        <div className="hidden text-sm text-muted-foreground md:inline">
-                          liam@example.com
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        Sale
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        <Badge className="text-xs" variant="secondary">
-                          Fulfilled
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        2023-06-23
-                      </TableCell>
-                      <TableCell className="text-right">$250.00</TableCell>
-                    </TableRow>
+                    {data.map((patients, index) => (
+                      <TableRow className="bg-accent" key={index}>
+                        <TableCell>
+                          <div className="font-medium">{patients.Name}</div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {patients.Mobile}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {patients.Email}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {patients.Address}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {patients.Mobile}
+                        </TableCell>
+                      </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </CardContent>
