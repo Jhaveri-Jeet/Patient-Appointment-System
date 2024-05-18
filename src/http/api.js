@@ -1,5 +1,6 @@
 import axios from "axios";
-import { prefixUrl } from "./config";
+
+const prefixUrl = "http://127.0.0.1:8000";
 
 // Patients APIs
 export const fetchPatients = async () => {
