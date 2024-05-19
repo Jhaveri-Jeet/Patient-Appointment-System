@@ -47,17 +47,17 @@ export default function Appointments() {
     queryFn: fetchAppointments,
   });
 
-  const navigate = useNavigate();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
+  var index = 1;
   const columns = useMemo(
     () => [
       {
-        accessorKey: "Id",
-        header: "Id",
+        accessorKey: "patient.Name",
+        header: "Patient",
       },
       {
         accessorKey: "Problem",
@@ -72,16 +72,12 @@ export default function Appointments() {
         header: "Prescription",
       },
       {
-        accessorKey: "PatientId",
-        header: "PatientId",
+        accessorKey: "service.Name",
+        header: "Serivce",
       },
       {
-        accessorKey: "ServiceId",
-        header: "ServiceId",
-      },
-      {
-        accessorKey: "SlotId",
-        header: "SlotId",
+        accessorKey: "slot.Time",
+        header: "Time",
       },
     ],
     []
@@ -114,11 +110,6 @@ export default function Appointments() {
     return <div>Error: {error.message}</div>;
   }
 
-  const openAlert = (id) => {
-    console.log("Cell Clicked ! ", id);
-    navigate("/Dashboard", { state: { patientId: id }, replace: true });
-  };
-
   return (
     <main className="grid flex gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
@@ -127,13 +118,15 @@ export default function Appointments() {
             <Card x-chunk="dashboard-05-chunk-3">
               <CardHeader className="px-7">
                 <CardTitle>Appointments</CardTitle>
-                <CardDescription>All of your appointments.</CardDescription>
+                <CardDescription>
+                  All of your pending appointments.
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="w-full">
                   <div className="flex items-center py-4">
                     <Input
-                      placeholder="Search by names..."
+                      placeholder="Search by problem..."
                       onChange={(event) =>
                         table
                           .getColumn("Problem")
@@ -175,6 +168,7 @@ export default function Appointments() {
                       <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                           <TableRow key={headerGroup.id}>
+                            <TableHead>Sr</TableHead>
                             {headerGroup.headers.map((header) => {
                               return (
                                 <TableHead key={header.id}>
@@ -196,8 +190,8 @@ export default function Appointments() {
                             <TableRow
                               key={row.id}
                               data-state={row.getIsSelected() && "selected"}
-                              onClick={() => openAlert(row.original.Id)}
                             >
+                              <TableCell>{index++}</TableCell>
                               {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>
                                   {flexRender(

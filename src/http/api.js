@@ -12,6 +12,15 @@ export const fetchPatients = async () => {
   }
 };
 
+export const fetchTotalPatients = async () => {
+  try {
+    const response = await axios.get(`${prefixUrl}/totalPatients`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // Appointments APIs
 export const fetchAppointmentAccToPatients = async (id) => {
   try {
@@ -24,6 +33,24 @@ export const fetchAppointmentAccToPatients = async (id) => {
 export const fetchAppointments = async () => {
   try {
     const response = await axios.get(`${prefixUrl}/appointment`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  } 
+};
+
+export const fetchTodaysAppointments = async () => {
+  try {
+    const response = await axios.get(`${prefixUrl}/todaysAppointments`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const fetchTotalPendingAppointmentCount = async () => {
+  try {
+    const response = await axios.get(`${prefixUrl}/totalPendingAppointment`);
     return response.data;
   } catch (error) {
     console.error(error);

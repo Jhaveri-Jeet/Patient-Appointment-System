@@ -66,12 +66,9 @@ export default function PatientAppointments() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
+  let index = 1;
   const columns = useMemo(
     () => [
-      {
-        accessorKey: "Id",
-        header: "Id",
-      },
       {
         accessorKey: "Problem",
         header: "Problem",
@@ -85,16 +82,16 @@ export default function PatientAppointments() {
         header: "Prescription",
       },
       {
-        accessorKey: "PatientId",
-        header: "PatientId",
+        accessorKey: "service.Name",
+        header: "Service",
       },
       {
-        accessorKey: "ServiceId",
-        header: "ServiceId",
+        accessorKey: "slot.Time",
+        header: "Time",
       },
       {
-        accessorKey: "SlotId",
-        header: "SlotId",
+        accessorKey: "Status",
+        header: "Status",
       },
     ],
     []
@@ -143,7 +140,7 @@ export default function PatientAppointments() {
                 <div className="w-full">
                   <div className="flex items-center py-4">
                     <Input
-                      placeholder="Search by names..."
+                      placeholder="Search by problem..."
                       onChange={(event) =>
                         table
                           .getColumn("Problem")
@@ -185,6 +182,7 @@ export default function PatientAppointments() {
                       <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                           <TableRow key={headerGroup.id}>
+                            <TableHead>Sr</TableHead>
                             {headerGroup.headers.map((header) => {
                               return (
                                 <TableHead key={header.id}>
@@ -207,6 +205,7 @@ export default function PatientAppointments() {
                               key={row.id}
                               data-state={row.getIsSelected() && "selected"}
                             >
+                              <TableCell>{index++}</TableCell>
                               {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>
                                   {flexRender(

@@ -54,12 +54,9 @@ export default function Patients() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
+  var index = 1;
   const columns = useMemo(
     () => [
-      {
-        accessorKey: "Id",
-        header: "Id",
-      },
       {
         accessorKey: "Name",
         header: "Name",
@@ -171,6 +168,7 @@ export default function Patients() {
                       <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                           <TableRow key={headerGroup.id}>
+                            <TableHead>Sr</TableHead>
                             {headerGroup.headers.map((header) => {
                               return (
                                 <TableHead key={header.id}>
@@ -194,6 +192,7 @@ export default function Patients() {
                               data-state={row.getIsSelected() && "selected"}
                               onClick={() => viewAppointments(row.original.Id)}
                             >
+                              <TableCell>{index++}</TableCell>
                               {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>
                                   {flexRender(
