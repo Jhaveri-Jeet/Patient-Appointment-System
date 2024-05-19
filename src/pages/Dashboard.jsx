@@ -1,14 +1,4 @@
-import {
-  ChevronLeft,
-  ChevronRight,
-  Copy,
-  CreditCard,
-  File,
-  ListFilter,
-  MoreVertical,
-  Truck,
-} from "lucide-react";
-
+import { Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -19,6 +9,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
@@ -33,20 +35,69 @@ import {
 } from "@/components/ui/table";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
+
 import {
+  createService,
   fetchTodaysAppointments,
   fetchTotalPatients,
   fetchTotalPendingAppointmentCount,
 } from "@/http/api";
+
 import { SkeletonTable } from "@/components/skeletonTable";
 import { SkeletonCard } from "@/components/skeletonCard";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 export default function Dashboard() {
   useEffect(() => {
     document.title = "Dashboard";
   }, []);
+
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
+  const serviceNameRef = useRef(null);
+  const serviceDescriptionRef = useRef(null);
+  const servicePriceRef = useRef(null);
+
+  const handleServiceInput = () => {
+    const name = serviceNameRef.current.value;
+    const description = serviceDescriptionRef.current.value;
+    const price = servicePriceRef.current.value;
+
+    if (name && description && price) {
+      const data = { Name: name, Description: description, Price: price };
+      const response = createService(data);
+      const toastMessage = response
+        ? "Service Created Successfully !"
+        : "Error while creating the service";
+      toast(toastMessage, {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
+    } else {
+      toast("Error Occurred While Creating the service", {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
+    }
+  };
 
   const {
     data: todaysAppointments,
@@ -80,16 +131,16 @@ export default function Dashboard() {
     queryFn: fetchTotalPatients,
     staleTime: 10000,
   });
-  if (isLoadingAppointments) {
-    return <SkeletonTable />;
-  }
-
   if (isLoadingTotalPendingCount) {
     return <SkeletonCard />;
   }
 
   if (isLoadingTotalPatients) {
     return <SkeletonCard />;
+  }
+
+  if (isLoadingAppointments) {
+    return <SkeletonTable />;
   }
 
   if (isErrorTotalPendingCount) {
@@ -116,7 +167,45 @@ export default function Dashboard() {
               </CardDescription>
             </CardHeader>
             <CardFooter>
-              <Button>Create New Service</Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button>Create new Service</Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Enter the Details of the Service
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      <Input
+                        ref={serviceNameRef}
+                        type="text"
+                        placeholder="Enter the Service Name:"
+                        className="w-full rounded-lg bg-background my-6"
+                        autoFocus={true}
+                      />
+                      <Input
+                        ref={serviceDescriptionRef}
+                        type="text"
+                        placeholder="Enter the Service Description:"
+                        className="w-full rounded-lg bg-background my-6"
+                      />
+                      <Input
+                        ref={servicePriceRef}
+                        type="number"
+                        placeholder="Enter the Service Price:"
+                        className="w-full rounded-lg bg-background my-6"
+                      />
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleServiceInput}>
+                      Create
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </CardFooter>
           </Card>
           <Card x-chunk="dashboard-05-chunk-1">

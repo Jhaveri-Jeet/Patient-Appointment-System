@@ -36,7 +36,7 @@ export const fetchAppointments = async () => {
     return response.data;
   } catch (error) {
     console.error(error);
-  } 
+  }
 };
 
 export const fetchTodaysAppointments = async () => {
@@ -61,6 +61,24 @@ export const fetchTotalPendingAppointmentCount = async () => {
 export const fetchServices = async () => {
   try {
     const response = await axios.get(`${prefixUrl}/service`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const createService = async (data) => {
+  try {
+    const response = await axios.post(`${prefixUrl}/service`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const updateService = async (id, data) => {
+  try {
+    const response = await axios.put(`${prefixUrl}/service/${id}`, data);
     return response.data;
   } catch (error) {
     console.error(error);

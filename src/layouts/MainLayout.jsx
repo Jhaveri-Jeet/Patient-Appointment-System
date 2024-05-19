@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 
 import {
   DropdownMenu,
@@ -149,31 +150,14 @@ function MainLayout() {
               </nav>
             </SheetContent>
           </Sheet>
-          <CardTitle className="ml-3">Good Morning 🌞!</CardTitle>
-          {/* <Breadcrumb className="hidden md:flex">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage>Dashboard</BreadcrumbPage>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link to="#">Orders</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Recent Orders</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb> */}
+          <CardTitle className="ml-3 w-full">Good Morning 🌞!</CardTitle>
           <div className="relative ml-auto flex-1 md:grow-0">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            {/* <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
               placeholder="Search..."
               className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
+            /> */}
           </div>
           <ModeToggle />
           <DropdownMenu>
@@ -196,6 +180,7 @@ function MainLayout() {
           </DropdownMenu>
         </header>
         <Outlet />
+        <Toaster />
       </div>
     </div>
   );
