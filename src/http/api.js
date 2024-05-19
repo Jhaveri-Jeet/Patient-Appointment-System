@@ -12,9 +12,27 @@ export const fetchPatients = async () => {
   }
 };
 
+export const fetchPatientsById = async (id) => {
+  try {
+    const response = await axios.get(`${prefixUrl}/patient/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const fetchTotalPatients = async () => {
   try {
     const response = await axios.get(`${prefixUrl}/totalPatients`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const createPatient = async (data) => {
+  try {
+    const response = await axios.post(`${prefixUrl}/patient`, data);
     return response.data;
   } catch (error) {
     console.error(error);

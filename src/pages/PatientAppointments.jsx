@@ -8,10 +8,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Copy } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchAppointmentAccToPatients } from "@/http/api";
+import { fetchAppointmentAccToPatients, fetchPatientsById } from "@/http/api";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -38,6 +38,8 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { SkeletonTable } from "@/components/skeletonTable";
+import { Separator } from "@/components/ui/separator";
+import { SkeletonCard } from "@/components/skeletonCard";
 
 export default function PatientAppointments() {
   useEffect(() => {
@@ -59,6 +61,16 @@ export default function PatientAppointments() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["appointments"],
     queryFn: () => fetchAppointmentAccToPatients(patientId),
+  });
+
+  const {
+    data: patientData,
+    isLoading: isLoadingPatientData,
+    isError: isErrorPatientData,
+    error: errorPatientData,
+  } = useQuery({
+    queryKey: ["patient"],
+    queryFn: () => fetchPatientsById(patientId),
   });
 
   const [sorting, setSorting] = useState([]);
@@ -122,6 +134,14 @@ export default function PatientAppointments() {
 
   if (isError) {
     return <div>Error: {error.message}</div>;
+  }
+
+  if (isLoadingPatientData) {
+    return <SkeletonCard />;
+  }
+
+  if (isErrorPatientData) {
+    return <div>Error: {errorPatientData.message}</div>;
   }
 
   return (
@@ -258,6 +278,65 @@ export default function PatientAppointments() {
             </Card>
           </TabsContent>
         </Tabs>
+      </div>
+      <div>
+        <Card className="overflow-hidden mt-2.5" x-chunk="dashboard-05-chunk-4">
+          <CardHeader className="flex flex-row items-start bg-muted/50">
+            <div className="grid gap-0.5">
+              <CardTitle className="group flex items-center gap-2 text-lg">
+                {patientData.Name}
+                <Button
+                  size="icon"
+                  variant="outline"
+                  className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
+                >
+                  <Copy className="h-3 w-3" />
+                  <span className="sr-only">Copy Order ID</span>
+                </Button>
+              </CardTitle>
+              <CardDescription>{patientData.Email}</CardDescription>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6 text-sm">
+            <div className="grid gap-3">
+              <div className="font-semibold">Patient Details</div>
+              <ul className="grid gap-3">
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Name</span>
+                  <span>{patientData.Name}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Address</span>
+                  <span>{patientData.Address}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Gender</span>
+                  <span>{patientData.Gender}</span>
+                </li>
+              </ul>
+              <Separator className="my-2" />
+              <div className="font-semibold">Contact Details</div>
+              <ul className="grid gap-3">
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Mobile</span>
+                  <span>{patientData.Mobile}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Email</span>
+                  <span>{patientData.Email}</span>
+                </li>
+              </ul>
+              <Separator className="my-2" />
+              <div className="font-semibold">Health Details</div>
+              <ul className="grid gap-3">
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Blood Group</span>
+                  <span>{patientData.BloodGroup}</span>
+                </li>
+              </ul>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </main>
   );

@@ -45,6 +45,7 @@ export default function Appointments() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["appointments"],
     queryFn: fetchAppointments,
+    staleTime: 10000,
   });
 
   const [sorting, setSorting] = useState([]);
@@ -66,10 +67,6 @@ export default function Appointments() {
       {
         accessorKey: "Date",
         header: "Date",
-      },
-      {
-        accessorKey: "Prescription",
-        header: "Prescription",
       },
       {
         accessorKey: "service.Name",
