@@ -29,3 +29,13 @@ export const fetchAppointments = async () => {
     console.error(error);
   }
 };
+
+// Services APIs
+export const fetchServices = async () => {
+  try {
+    const response = await axios.get(`${prefixUrl}/service`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};

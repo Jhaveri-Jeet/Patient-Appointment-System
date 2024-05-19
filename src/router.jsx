@@ -4,6 +4,7 @@ import Patients from "@/pages/Patients";
 import Login from "@/pages/Login";
 import Appointments from "@/pages/Appointments";
 import PatientAppointments from "@/pages/PatientAppointments";
+import Services from "@/pages/Services";
 import MainLayout from "@/layouts/MainLayout";
 
 export var title = "Admin Panel";
@@ -19,6 +20,10 @@ export const router = new createBrowserRouter([
       {
         path: "/Dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/Services",
+        element: <Services />,
       },
       {
         path: "/Patients",
