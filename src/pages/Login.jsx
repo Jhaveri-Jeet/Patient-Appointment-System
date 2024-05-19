@@ -11,9 +11,12 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 
 export default function Login() {
+  useEffect(() => {
+    document.title = "Login";
+  }, []);
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
 

@@ -11,3 +11,21 @@ export const fetchPatients = async () => {
     console.error(error);
   }
 };
+
+// Appointments APIs
+export const fetchAppointmentAccToPatients = async (id) => {
+  try {
+    const response = await axios.get(`${prefixUrl}/appointment/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+export const fetchAppointments = async () => {
+  try {
+    const response = await axios.get(`${prefixUrl}/appointment`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};

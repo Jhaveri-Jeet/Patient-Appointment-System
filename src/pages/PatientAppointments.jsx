@@ -11,7 +11,7 @@ import {
 import { ChevronDown } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchPatients } from "@/http/api";
+import { fetchAppointmentAccToPatients } from "@/http/api";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -36,19 +36,31 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { useLocation } from "react-router-dom";
 import { SkeletonTable } from "@/components/skeletonTable";
 
-export default function Patients() {
+export default function PatientAppointments() {
   useEffect(() => {
-    document.title = "Patients";
+    document.title = "Patient Appointment";
   }, []);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const patientId = location.state?.patientId;
+
+  if (
+    patientId === 0 ||
+    patientId === null ||
+    patientId === "" ||
+    patientId === undefined
+  ) {
+    navigate("/Patients");
+  }
+
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["patients"],
-    queryFn: fetchPatients,
-    staleTime: 10000,
+    queryKey: ["appointments"],
+    queryFn: () => fetchAppointmentAccToPatients(patientId),
   });
 
-  const navigate = useNavigate();
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -61,24 +73,28 @@ export default function Patients() {
         header: "Id",
       },
       {
-        accessorKey: "Name",
-        header: "Name",
+        accessorKey: "Problem",
+        header: "Problem",
       },
       {
-        accessorKey: "Mobile",
-        header: "Mobile",
+        accessorKey: "Date",
+        header: "Date",
       },
       {
-        accessorKey: "Email",
-        header: "Email",
+        accessorKey: "Prescription",
+        header: "Prescription",
       },
       {
-        accessorKey: "Gender",
-        header: "Gender",
+        accessorKey: "PatientId",
+        header: "PatientId",
       },
       {
-        accessorKey: "Address",
-        header: "Address",
+        accessorKey: "ServiceId",
+        header: "ServiceId",
+      },
+      {
+        accessorKey: "SlotId",
+        header: "SlotId",
       },
     ],
     []
@@ -111,10 +127,6 @@ export default function Patients() {
     return <div>Error: {error.message}</div>;
   }
 
-  const viewAppointments = (id) => {
-    navigate("/PatientAppointments", { state: { patientId: id } });
-  };
-
   return (
     <main className="grid flex gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
       <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
@@ -122,8 +134,10 @@ export default function Patients() {
           <TabsContent value="all">
             <Card x-chunk="dashboard-05-chunk-3">
               <CardHeader className="px-7">
-                <CardTitle>Patients</CardTitle>
-                <CardDescription>All of your patients.</CardDescription>
+                <CardTitle>Patient Appointments</CardTitle>
+                <CardDescription>
+                  All of your patient appointments.
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="w-full">
@@ -132,7 +146,7 @@ export default function Patients() {
                       placeholder="Search by names..."
                       onChange={(event) =>
                         table
-                          .getColumn("Name")
+                          .getColumn("Problem")
                           ?.setFilterValue(event.target.value)
                       }
                       className="max-w-sm"
@@ -192,7 +206,6 @@ export default function Patients() {
                             <TableRow
                               key={row.id}
                               data-state={row.getIsSelected() && "selected"}
-                              onClick={() => viewAppointments(row.original.Id)}
                             >
                               {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>

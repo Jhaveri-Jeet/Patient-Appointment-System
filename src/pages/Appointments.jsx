@@ -11,7 +11,7 @@ import {
 import { ChevronDown } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchPatients } from "@/http/api";
+import { fetchAppointments } from "@/http/api";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -38,14 +38,13 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { SkeletonTable } from "@/components/skeletonTable";
 
-export default function Patients() {
+export default function Appointments() {
   useEffect(() => {
-    document.title = "Patients";
+    document.title = "Appointments";
   }, []);
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["patients"],
-    queryFn: fetchPatients,
-    staleTime: 10000,
+    queryKey: ["appointments"],
+    queryFn: fetchAppointments,
   });
 
   const navigate = useNavigate();
@@ -61,24 +60,28 @@ export default function Patients() {
         header: "Id",
       },
       {
-        accessorKey: "Name",
-        header: "Name",
+        accessorKey: "Problem",
+        header: "Problem",
       },
       {
-        accessorKey: "Mobile",
-        header: "Mobile",
+        accessorKey: "Date",
+        header: "Date",
       },
       {
-        accessorKey: "Email",
-        header: "Email",
+        accessorKey: "Prescription",
+        header: "Prescription",
       },
       {
-        accessorKey: "Gender",
-        header: "Gender",
+        accessorKey: "PatientId",
+        header: "PatientId",
       },
       {
-        accessorKey: "Address",
-        header: "Address",
+        accessorKey: "ServiceId",
+        header: "ServiceId",
+      },
+      {
+        accessorKey: "SlotId",
+        header: "SlotId",
       },
     ],
     []
@@ -111,8 +114,9 @@ export default function Patients() {
     return <div>Error: {error.message}</div>;
   }
 
-  const viewAppointments = (id) => {
-    navigate("/PatientAppointments", { state: { patientId: id } });
+  const openAlert = (id) => {
+    console.log("Cell Clicked ! ", id);
+    navigate("/Dashboard", { state: { patientId: id }, replace: true });
   };
 
   return (
@@ -122,8 +126,8 @@ export default function Patients() {
           <TabsContent value="all">
             <Card x-chunk="dashboard-05-chunk-3">
               <CardHeader className="px-7">
-                <CardTitle>Patients</CardTitle>
-                <CardDescription>All of your patients.</CardDescription>
+                <CardTitle>Appointments</CardTitle>
+                <CardDescription>All of your appointments.</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="w-full">
@@ -132,7 +136,7 @@ export default function Patients() {
                       placeholder="Search by names..."
                       onChange={(event) =>
                         table
-                          .getColumn("Name")
+                          .getColumn("Problem")
                           ?.setFilterValue(event.target.value)
                       }
                       className="max-w-sm"
@@ -192,7 +196,7 @@ export default function Patients() {
                             <TableRow
                               key={row.id}
                               data-state={row.getIsSelected() && "selected"}
-                              onClick={() => viewAppointments(row.original.Id)}
+                              onClick={() => openAlert(row.original.Id)}
                             >
                               {row.getVisibleCells().map((cell) => (
                                 <TableCell key={cell.id}>

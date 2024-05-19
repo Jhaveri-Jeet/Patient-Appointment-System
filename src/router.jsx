@@ -2,7 +2,11 @@ import { createBrowserRouter } from "react-router-dom";
 import Dashboard from "@/pages/Dashboard";
 import Patients from "@/pages/Patients";
 import Login from "@/pages/Login";
+import Appointments from "@/pages/Appointments";
+import PatientAppointments from "@/pages/PatientAppointments";
 import MainLayout from "@/layouts/MainLayout";
+
+export var title = "Admin Panel";
 export const router = new createBrowserRouter([
   {
     path: "/",
@@ -22,7 +26,11 @@ export const router = new createBrowserRouter([
       },
       {
         path: "/Appointments",
-        element: <Dashboard />,
+        element: <Appointments />,
+      },
+      {
+        path: "/PatientAppointments",
+        element: <PatientAppointments />,
       },
     ],
   },
