@@ -425,10 +425,11 @@ export default function Dashboard() {
                         onChange={handleInputChange}
                       />
                       <Input
-                        type="text"
+                        type="password"
                         placeholder="Enter Password"
                         className="w-full rounded-lg bg-background my-6"
                         name="HashPassword"
+                        value={adminFormData.HashPassword}
                         onChange={handleInputChange}
                       />
                       <Input
