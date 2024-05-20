@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -29,15 +29,25 @@ import {
   Package,
   Package2,
   PanelLeft,
-  Search,
   Users2,
   Menu,
 } from "lucide-react";
 
 import { Outlet } from "react-router-dom";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+import useStoreToken from "@/http/store";
 
 function MainLayout() {
+  const token = useStoreToken((state) => state.token);
+  const setToken = useStoreToken((state) => state.setToken);
+
+  if (token === "") {
+    return <Navigate to="/Auth/Login" replace />;
+  }
+
+  const logOut = () => {
+    setToken("");
+  };
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
@@ -174,8 +184,7 @@ function MainLayout() {
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Profile</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={logOut}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

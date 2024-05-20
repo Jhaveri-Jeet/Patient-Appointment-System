@@ -2,6 +2,16 @@ import axios from "axios";
 
 const prefixUrl = "http://127.0.0.1:8000";
 
+// Authentication APIs
+
+export const autheticationAdmin = async (data) => {
+  try {
+    const response = await axios.post(`${prefixUrl}/adminToken`, data);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
 // Patients APIs
 export const fetchPatients = async () => {
   try {

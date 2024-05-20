@@ -87,7 +87,6 @@ export default function Appointments() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["appointments"],
     queryFn: fetchAppointments,
-    staleTime: 10000,
   });
 
   const {
