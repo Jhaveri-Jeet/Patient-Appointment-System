@@ -39,12 +39,12 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { useLocation } from "react-router-dom";
 import { SkeletonTable } from "@/components/skeletonTable";
 import { Separator } from "@/components/ui/separator";
-import { SkeletonCard } from "@/components/skeletonCard";
 
 export default function PatientAppointments() {
   useEffect(() => {
     document.title = "Patient Appointment";
   }, []);
+
   const navigate = useNavigate();
   const location = useLocation();
   const patientId = location.state?.patientId;
@@ -63,20 +63,23 @@ export default function PatientAppointments() {
     queryFn: () => fetchAppointmentAccToPatients(patientId),
   });
 
-  const {
-    data: patientData,
-    isLoading: isLoadingPatientData,
-    isError: isErrorPatientData,
-    error: errorPatientData,
-  } = useQuery({
-    queryKey: ["patient"],
-    queryFn: () => fetchPatientsById(patientId),
-  });
-
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
+
+  const [showAppointmentCart, setShowAppointmentCard] = useState(false);
+  const [patientName, setPatientName] = useState("");
+  const [patientEmail, setPatientEmail] = useState("");
+  const [patientNumber, setPatientNumber] = useState();
+  const [patientGender, setPatientGender] = useState("");
+  const [patientBloodGroup, setPatientBloodGroup] = useState("");
+  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentProblem, setAppointmentProblem] = useState("");
+  const [appointmentPrescription, setAppointmentPrescription] = useState("");
+  const [appointmentSlot, setAppointmentSlot] = useState("");
+  const [serviceName, setServiceName] = useState("");
+  const [servicePrice, setServicePrice] = useState("");
 
   let index = 1;
   const columns = useMemo(
@@ -128,20 +131,26 @@ export default function PatientAppointments() {
     },
   });
 
+  const viewAppointmentDetails = (appointmentDetails) => {
+    setShowAppointmentCard(true);
+    setPatientName(appointmentDetails.patient.Name);
+    setPatientEmail(appointmentDetails.patient.Email);
+    setPatientNumber(appointmentDetails.patient.Mobile);
+    setPatientGender(appointmentDetails.patient.Gender);
+    setPatientBloodGroup(appointmentDetails.patient.BloodGroup);
+    setAppointmentDate(appointmentDetails.Date);
+    setAppointmentProblem(appointmentDetails.Problem);
+    setAppointmentPrescription(appointmentDetails.Prescription);
+    setAppointmentSlot(appointmentDetails.slot.Time);
+    setServiceName(appointmentDetails.service.Name);
+    setServicePrice(appointmentDetails.service.Price);
+  };
   if (isLoading) {
     return <SkeletonTable />;
   }
 
   if (isError) {
     return <div>Error: {error.message}</div>;
-  }
-
-  if (isLoadingPatientData) {
-    return <SkeletonCard />;
-  }
-
-  if (isErrorPatientData) {
-    return <div>Error: {errorPatientData.message}</div>;
   }
 
   return (
@@ -224,6 +233,9 @@ export default function PatientAppointments() {
                             <TableRow
                               key={row.id}
                               data-state={row.getIsSelected() && "selected"}
+                              onClick={() =>
+                                viewAppointmentDetails(row.original)
+                              }
                             >
                               <TableCell>{index++}</TableCell>
                               {row.getVisibleCells().map((cell) => (
@@ -279,12 +291,12 @@ export default function PatientAppointments() {
           </TabsContent>
         </Tabs>
       </div>
-      <div>
+      <div className={showAppointmentCart ? "" : "hidden"}>
         <Card className="overflow-hidden mt-2.5" x-chunk="dashboard-05-chunk-4">
           <CardHeader className="flex flex-row items-start bg-muted/50">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
-                {patientData.Name}
+                {patientName}
                 <Button
                   size="icon"
                   variant="outline"
@@ -294,44 +306,55 @@ export default function PatientAppointments() {
                   <span className="sr-only">Copy Order ID</span>
                 </Button>
               </CardTitle>
-              <CardDescription>{patientData.Email}</CardDescription>
+              <CardDescription>{patientEmail}</CardDescription>
+              <CardDescription>{patientNumber}</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="p-6 text-sm">
             <div className="grid gap-3">
-              <div className="font-semibold">Patient Details</div>
+              <div className="font-semibold">Medical Details</div>
               <ul className="grid gap-3">
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Name</span>
-                  <span>{patientData.Name}</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Address</span>
-                  <span>{patientData.Address}</span>
-                </li>
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Gender</span>
-                  <span>{patientData.Gender}</span>
+                  <span>{patientGender}</span>
                 </li>
               </ul>
-              <Separator className="my-2" />
-              <div className="font-semibold">Contact Details</div>
-              <ul className="grid gap-3">
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Mobile</span>
-                  <span>{patientData.Mobile}</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Email</span>
-                  <span>{patientData.Email}</span>
-                </li>
-              </ul>
-              <Separator className="my-2" />
-              <div className="font-semibold">Health Details</div>
               <ul className="grid gap-3">
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Blood Group</span>
-                  <span>{patientData.BloodGroup}</span>
+                  <span>{patientBloodGroup}</span>
+                </li>
+              </ul>
+              <Separator className="my-2" />
+              <div className="font-semibold">Appointment Details</div>
+              <ul className="grid gap-3">
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Date</span>
+                  <span>{appointmentDate}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Problem</span>
+                  <span>{appointmentProblem}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Prescription</span>
+                  <span>{appointmentPrescription}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Slot</span>
+                  <span>{appointmentSlot}</span>
+                </li>
+              </ul>
+              <Separator className="my-2" />
+              <div className="font-semibold">Service Details</div>
+              <ul className="grid gap-3">
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Name</span>
+                  <span>{serviceName}</span>
+                </li>
+                <li className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Price</span>
+                  <span>{servicePrice}</span>
                 </li>
               </ul>
             </div>
