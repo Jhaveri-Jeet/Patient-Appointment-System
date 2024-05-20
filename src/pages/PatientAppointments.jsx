@@ -48,6 +48,7 @@ export default function PatientAppointments() {
   const navigate = useNavigate();
   const location = useLocation();
   const patientId = location.state?.patientId;
+  console.log(patientId);
 
   if (
     patientId === 0 ||

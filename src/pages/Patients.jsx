@@ -70,6 +70,15 @@ export default function Patients() {
   const [columnVisibility, setColumnVisibility] = useState({});
   const [rowSelection, setRowSelection] = useState({});
 
+  const [patientCard, setPatientCard] = useState(false);
+  const [patientSendId, setPatientSendId] = useState(false);
+  const [patientName, setPatientName] = useState(null);
+  const [patientEmail, setPatientEmail] = useState(null);
+  const [patientNumber, setPatientNumber] = useState(null);
+  const [patientAddress, setPatientAddress] = useState(null);
+  const [patientGender, setPatientGender] = useState(null);
+  const [patientBloodGroup, setPatientBloodGroup] = useState(null);
+
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleString("en-US", {
     weekday: "long",
@@ -139,28 +148,17 @@ export default function Patients() {
     }
   };
 
-  const mutation = useMutation({
-    mutationFn: (id) => setPatientId(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries(["patient"]);
-    },
-  });
-
-  const viewPatient = (id) => {
-    mutation.mutate(id);
+  const viewPatient = (patient) => {
+    console.log(patient);
+    setPatientCard(true);
+    setPatientSendId(patient.Id);
+    setPatientName(patient.Name);
+    setPatientEmail(patient.Email);
+    setPatientNumber(patient.Mobile);
+    setPatientAddress(patient.Address);
+    setPatientGender(patient.Gender);
+    setPatientBloodGroup(patient.BloodGroup);
   };
-
-  const {
-    data: patientData,
-    isLoading: isLoadingPatientData,
-    isError: isErrorPatientData,
-    error: errorPatientData,
-  } = useQuery({
-    queryKey: ["patient", patientId],
-    queryFn: () => fetchPatientsById(patientId),
-    staleTime: 10000,
-  });
-
   const columns = useMemo(
     () => [
       {
@@ -208,12 +206,12 @@ export default function Patients() {
 
   let index = 1;
 
-  if (isLoading || isLoadingPatientData) {
+  if (isLoading) {
     return <SkeletonCard />;
   }
 
-  if (isError || isErrorPatientData) {
-    return <div>Error: {error ? error.message : errorPatientData.message}</div>;
+  if (isError) {
+    return <div>Error: {error.message}</div>;
   }
   return (
     <main className="grid flex gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
@@ -347,12 +345,12 @@ export default function Patients() {
                         ))}
                       </TableHeader>
                       <TableBody>
-                        {table.getRowModel().rows?.length ? (
+                        {data && table.getRowModel().rows?.length ? (
                           table.getRowModel().rows.map((row) => (
                             <TableRow
                               key={row.id}
                               data-state={row.getIsSelected() && "selected"}
-                              onClick={() => viewPatient(row.original.Id)}
+                              onClick={() => viewPatient(row.original)}
                             >
                               <TableCell>{index++}</TableCell>
                               {row.getVisibleCells().map((cell) => (
@@ -408,12 +406,12 @@ export default function Patients() {
           </TabsContent>
         </Tabs>
       </div>
-      <div>
+      <div className={patientCard ? "" : "hidden"}>
         <Card className="overflow-hidden mt-2.5" x-chunk="dashboard-05-chunk-4">
           <CardHeader className="flex flex-row items-start bg-muted/50">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
-                {patientData.Name}
+                {patientName}
                 <Button
                   size="icon"
                   variant="outline"
@@ -423,7 +421,7 @@ export default function Patients() {
                   <span className="sr-only">Copy Order ID</span>
                 </Button>
               </CardTitle>
-              <CardDescription>{patientData.Email}</CardDescription>
+              <CardDescription>{patientEmail}</CardDescription>
             </div>
           </CardHeader>
           <CardContent className="p-6 text-sm">
@@ -432,15 +430,15 @@ export default function Patients() {
               <ul className="grid gap-3">
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Name</span>
-                  <span>{patientData.Name}</span>
+                  <span>{patientName}</span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Address</span>
-                  <span>{patientData.Address}</span>
+                  <span>{patientAddress}</span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Gender</span>
-                  <span>{patientData.Gender}</span>
+                  <span>{patientGender}</span>
                 </li>
               </ul>
               <Separator className="my-2" />
@@ -448,11 +446,11 @@ export default function Patients() {
               <ul className="grid gap-3">
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Mobile</span>
-                  <span>{patientData.Mobile}</span>
+                  <span>{patientNumber}</span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Email</span>
-                  <span>{patientData.Email}</span>
+                  <span>{patientEmail}</span>
                 </li>
               </ul>
               <Separator className="my-2" />
@@ -460,13 +458,13 @@ export default function Patients() {
               <ul className="grid gap-3">
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Blood Group</span>
-                  <span>{patientData.BloodGroup}</span>
+                  <span>{patientBloodGroup}</span>
                 </li>
               </ul>
               <div className="justify-between flex">
                 <Button
                   className="mt-5 ml-auto"
-                  onClick={() => viewAppointments(patientData.Id)}
+                  onClick={() => viewAppointments(patientSendId)}
                 >
                   View Appointments
                 </Button>
