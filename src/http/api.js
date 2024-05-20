@@ -12,6 +12,7 @@ export const autheticationAdmin = async (data) => {
     console.error(error);
   }
 };
+
 // Patients APIs
 export const fetchPatients = async () => {
   try {
@@ -136,6 +137,16 @@ export const fetchSlots = async () => {
   try {
     const response = await axios.get(`${prefixUrl}/slot`);
     return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Payment Integration APIs
+export const createPaymentLink = async (data) => {
+  try {
+    const response = await axios.post(`${prefixUrl}/createPaymentLink`, data);
+    return response.data.url;
   } catch (error) {
     console.error(error);
   }

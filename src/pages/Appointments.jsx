@@ -19,10 +19,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ChevronDown, Copy } from "lucide-react";
+import { toast } from "sonner";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   createAppointment,
+  createPaymentLink,
   createPrescription,
   fetchAppointments,
   fetchPatients,
@@ -65,6 +67,7 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { SkeletonCard } from "@/components/skeletonCard";
 import { Separator } from "@/components/ui/separator";
+import { Navigate } from "react-router-dom";
 
 export default function Appointments() {
   const [displayAppointmentCard, setDisplayAppointmentCard] = useState(false);
@@ -81,6 +84,17 @@ export default function Appointments() {
   useEffect(() => {
     document.title = "Appointments";
   }, []);
+
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["appointments"],
@@ -154,7 +168,7 @@ export default function Appointments() {
     },
   });
 
-  const handleAppointmentSubmit = () => {
+  const handleAppointmentSubmit = async () => {
     if (selectedPatient && selectedService && selectedSlot && problem && date) {
       const data = {
         Problem: problem,
@@ -163,9 +177,24 @@ export default function Appointments() {
         ServiceId: selectedService,
         SlotId: selectedSlot,
       };
+      const paymentData = {
+        Amount: 500,
+        Currency: "inr",
+      };
       mutation.mutate(data);
       setProblem("");
       setDate("");
+      toast("Payment Link will open soon", {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
+      const paymentUrl = await createPaymentLink(paymentData);
+      if (paymentUrl) {
+        window.location.href = paymentUrl;
+      }
     }
   };
 
@@ -198,7 +227,7 @@ export default function Appointments() {
     mutationFn: ({ id, data }) => createPrescription(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries(["appointments"]);
-      toast("Appointment Added Successfully!", {
+      toast("Prescription Added Successfully!", {
         description: formattedDate,
         action: {
           label: "Ok",
@@ -207,7 +236,7 @@ export default function Appointments() {
       });
     },
     onError: () => {
-      toast("Error while adding the appointment", {
+      toast("Error while adding the prescription", {
         description: formattedDate,
         action: {
           label: "Ok",

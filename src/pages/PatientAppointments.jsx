@@ -93,16 +93,8 @@ export default function PatientAppointments() {
         header: "Date",
       },
       {
-        accessorKey: "Prescription",
-        header: "Prescription",
-      },
-      {
         accessorKey: "service.Name",
         header: "Service",
-      },
-      {
-        accessorKey: "slot.Time",
-        header: "Time",
       },
       {
         accessorKey: "Status",
