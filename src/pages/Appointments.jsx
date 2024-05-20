@@ -199,7 +199,6 @@ export default function Appointments() {
   };
 
   const viewAppointment = (data) => {
-    console.log(data.Id);
     setDisplayAppointmentCard(true);
     setPatientName(data.patient.Name);
     setPatientEmail(data.patient.Email);
@@ -258,10 +257,6 @@ export default function Appointments() {
       {
         accessorKey: "Date",
         header: "Date",
-      },
-      {
-        accessorKey: "service.Name",
-        header: "Service",
       },
       {
         accessorKey: "slot.Time",
