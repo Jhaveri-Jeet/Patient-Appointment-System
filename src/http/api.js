@@ -75,6 +75,24 @@ export const fetchTotalPendingAppointmentCount = async () => {
   }
 };
 
+export const createAppointment = async (data) => {
+  try {
+    const response = await axios.post(`${prefixUrl}/appointment`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const createPrescription = async (id, data) => {
+  try {
+    const response = await axios.post(`${prefixUrl}/prescription/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // Services APIs
 export const fetchServices = async () => {
   try {
@@ -97,6 +115,16 @@ export const createService = async (data) => {
 export const updateService = async (id, data) => {
   try {
     const response = await axios.put(`${prefixUrl}/service/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// Slot APIs
+export const fetchSlots = async () => {
+  try {
+    const response = await axios.get(`${prefixUrl}/slot`);
     return response.data;
   } catch (error) {
     console.error(error);

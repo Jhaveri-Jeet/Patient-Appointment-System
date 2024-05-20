@@ -61,7 +61,7 @@ export default function Patients() {
 
   useEffect(() => {
     document.title = "Patients";
-  }, [patientId]);
+  }, []);
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
