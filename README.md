@@ -1,6 +1,6 @@
 <div align="center">
 
-# Patient Appointment System - Frontend
+# 🏥 Patient Appointment System - Frontend 📅
 
 **Harnessing the Power of Modern Web Technologies to Streamline Healthcare Appointments**
 
@@ -22,7 +22,7 @@ The Patient Appointment System is a dynamic frontend application designed to opt
 - **Comprehensive Appointment Handling**: Seamlessly manage pending and past appointments, with functionality to issue prescriptions that automatically update the appointment status.
 - **Service Management**: Easily update and manage healthcare services with interactive list controls.
 - **Real-Time Notifications**: Automated feedback notifications for user actions, enhancing the overall user experience.
-- **Secure Access**: Robust JWT-based authentication safeguards system integrity and data privacy.
+- **Secure User Authentication**: Includes features for user login and logout, utilizing JWT for secure access and ensuring that users can only access routes they are authorized for.
 - **Adaptive UI Themes**: Choose from light, dark, or system-based themes to personalize the visual experience.
 - **Optimized Data Queries**: Leverage caching and state management for enhanced performance and faster response times.
 - **Integrated Payment Processing**: Facilitated through Stripe for secure and hassle-free transactions.
@@ -74,3 +74,7 @@ python --version
    ```
 
 Visit `http://localhost:3000` to explore the application.
+
+## 🔧 Reporting Issues
+
+Encounter a bug or have a suggestion? Please [open an issue](https://github.com/Jhaveri-Jeet/Patient-Appointment-System-Admin/issues) to help us improve.
