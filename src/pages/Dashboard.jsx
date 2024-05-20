@@ -1,4 +1,4 @@
-import { Copy } from "lucide-react";
+import { Copy, MoreVertical, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -22,6 +22,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 
@@ -35,14 +43,17 @@ import {
 } from "@/components/ui/table";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   createService,
+  fetchAdminDetails,
+  fetchServices,
   fetchTodaysAppointments,
   fetchTotalPatients,
   fetchTotalPendingAppointmentCount,
+  updateAdminDetails, // Import the update function
 } from "@/http/api";
 
 import { SkeletonTable } from "@/components/skeletonTable";
@@ -66,38 +77,19 @@ export default function Dashboard() {
     hour12: true,
   });
 
+  const queryClient = useQueryClient();
   const serviceNameRef = useRef(null);
   const serviceDescriptionRef = useRef(null);
   const servicePriceRef = useRef(null);
 
-  const handleServiceInput = () => {
-    const name = serviceNameRef.current.value;
-    const description = serviceDescriptionRef.current.value;
-    const price = servicePriceRef.current.value;
-
-    if (name && description && price) {
-      const data = { Name: name, Description: description, Price: price };
-      const response = createService(data);
-      const toastMessage = response
-        ? "Service Created Successfully !"
-        : "Error while creating the service";
-      toast(toastMessage, {
-        description: formattedDate,
-        action: {
-          label: "Ok",
-          onClick: () => console.log("Ok"),
-        },
-      });
-    } else {
-      toast("Error Occurred While Creating the service", {
-        description: formattedDate,
-        action: {
-          label: "Ok",
-          onClick: () => console.log("Ok"),
-        },
-      });
-    }
-  };
+  const [adminFormData, setAdminFormData] = useState({
+    Username: "",
+    HashPassword: "admin",
+    FullName: "",
+    Email: "",
+    Address: "",
+    Degree: "",
+  });
 
   const {
     data: todaysAppointments,
@@ -131,27 +123,111 @@ export default function Dashboard() {
     queryFn: fetchTotalPatients,
     staleTime: 10000,
   });
-  if (isLoadingTotalPendingCount) {
+
+  const { data: adminDetails } = useQuery({
+    queryKey: ["adminDetails"],
+    queryFn: fetchAdminDetails,
+    staleTime: 10000,
+  });
+
+  useEffect(() => {
+    if (adminDetails) {
+      setAdminFormData({
+        Username: adminDetails.Username || "",
+        HashPassword: adminDetails.HashPassword || "",
+        FullName: adminDetails.FullName || "",
+        Email: adminDetails.Email || "",
+        Address: adminDetails.Address || "",
+        Degree: adminDetails.Degree || "",
+      });
+    }
+  }, [adminDetails]);
+
+  const { data: serviceDetails } = useQuery({
+    queryKey: ["services"],
+    queryFn: fetchServices,
+    staleTime: 10000,
+  });
+
+  const mutation = useMutation({
+    mutationFn: (data) => createService(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["services"]);
+      toast("Service Created Successfully !", {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
+    },
+    onError: () => {
+      toast("Error Occurred While Creating the service", {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: (data) => updateAdminDetails(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["adminDetails"]);
+      toast("Admin Details Updated Successfully!", {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
+    },
+    onError: () => {
+      toast("Error Occurred While Updating Admin Details", {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
+    },
+  });
+
+  const handleServiceInput = () => {
+    const name = serviceNameRef.current.value;
+    const description = serviceDescriptionRef.current.value;
+    const price = servicePriceRef.current.value;
+
+    if (name && description && price) {
+      const data = { Name: name, Description: description, Price: price };
+      mutation.mutate(data);
+    }
+  };
+
+  const handleAdminDetailUpdate = () => {
+    updateMutation.mutate(adminFormData);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setAdminFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  if (
+    isLoadingTotalPendingCount ||
+    isLoadingTotalPatients ||
+    isLoadingAppointments
+  ) {
     return <SkeletonCard />;
   }
 
-  if (isLoadingTotalPatients) {
-    return <SkeletonCard />;
-  }
-
-  if (isLoadingAppointments) {
-    return <SkeletonTable />;
-  }
-
-  if (isErrorTotalPendingCount) {
+  if (isErrorTotalPendingCount || isErrorAppointments || isErrorTotalPatient) {
     return <div>Error: {errorTotalPendingCount.message}</div>;
-  }
-
-  if (isErrorAppointments) {
-    return <div>Error: {errorAppointments.message}</div>;
-  }
-  if (isErrorTotalPatient) {
-    return <div>Error: {errorTotalPatients.message}</div>;
   }
 
   return (
@@ -314,7 +390,7 @@ export default function Dashboard() {
           <CardHeader className="flex flex-row items-start bg-muted/50">
             <div className="grid gap-0.5">
               <CardTitle className="group flex items-center gap-2 text-lg">
-                Order Oe31b70H
+                {adminDetails?.FullName}
                 <Button
                   size="icon"
                   variant="outline"
@@ -324,84 +400,109 @@ export default function Dashboard() {
                   <span className="sr-only">Copy Order ID</span>
                 </Button>
               </CardTitle>
-              <CardDescription>Date: November 23, 2023</CardDescription>
+              <CardDescription>{adminDetails?.Email}</CardDescription>
+            </div>
+            <div className="ml-auto flex items-center gap-1">
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant={"outline"}>
+                    <Pencil className="h-3.5 w-3.5" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      Edit the Details of the Doctor
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      <Input
+                        type="text"
+                        placeholder="Enter Username"
+                        className="w-full rounded-lg bg-background my-6"
+                        autoFocus={true}
+                        name="Username"
+                        value={adminFormData.Username}
+                        onChange={handleInputChange}
+                      />
+                      <Input
+                        type="text"
+                        placeholder="Enter Password"
+                        className="w-full rounded-lg bg-background my-6"
+                        name="HashPassword"
+                        onChange={handleInputChange}
+                      />
+                      <Input
+                        type="text"
+                        placeholder="Enter Full Name"
+                        className="w-full rounded-lg bg-background my-6"
+                        name="FullName"
+                        value={adminFormData.FullName}
+                        onChange={handleInputChange}
+                      />
+                      <Input
+                        type="email"
+                        placeholder="Enter Email"
+                        className="w-full rounded-lg bg-background my-6"
+                        name="Email"
+                        value={adminFormData.Email}
+                        onChange={handleInputChange}
+                      />
+                      <Input
+                        type="text"
+                        placeholder="Enter Address"
+                        className="w-full rounded-lg bg-background my-6"
+                        name="Address"
+                        value={adminFormData.Address}
+                        onChange={handleInputChange}
+                      />
+                      <Input
+                        type="text"
+                        placeholder="Enter Degree"
+                        className="w-full rounded-lg bg-background my-6"
+                        name="Degree"
+                        value={adminFormData.Degree}
+                        onChange={handleInputChange}
+                      />
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={handleAdminDetailUpdate}>
+                      Update
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </CardHeader>
           <CardContent className="p-6 text-sm">
             <div className="grid gap-3">
-              <div className="font-semibold">Order Details</div>
+              <div className="font-semibold">Service Details</div>
               <ul className="grid gap-3">
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">
-                    Glimmer Lamps x <span>2</span>
-                  </span>
-                  <span>$250.00</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">
-                    Aqua Filters x <span>1</span>
-                  </span>
-                  <span>$49.00</span>
-                </li>
-              </ul>
-              <Separator className="my-2" />
-              <ul className="grid gap-3">
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>$299.00</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Shipping</span>
-                  <span>$5.00</span>
-                </li>
-                <li className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Tax</span>
-                  <span>$25.00</span>
-                </li>
-                <li className="flex items-center justify-between font-semibold">
-                  <span className="text-muted-foreground">Total</span>
-                  <span>$329.00</span>
-                </li>
+                {serviceDetails.map((serviceDetail, index) => (
+                  <li className="flex items-center justify-between" key={index}>
+                    <span className="text-muted-foreground">
+                      {serviceDetail.Name}
+                    </span>
+                    <span>₹ {serviceDetail.Price}</span>
+                  </li>
+                ))}
               </ul>
             </div>
             <Separator className="my-4" />
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-3">
-                <div className="font-semibold">Shipping Information</div>
+                <div className="font-semibold">Address</div>
                 <address className="grid gap-0.5 not-italic text-muted-foreground">
-                  <span>Liam Johnson</span>
-                  <span>1234 Main St.</span>
-                  <span>Anytown, CA 12345</span>
+                  <span>{adminDetails?.Address}</span>
                 </address>
               </div>
               <div className="grid auto-rows-max gap-3">
-                <div className="font-semibold">Billing Information</div>
+                <div className="font-semibold">Degree</div>
                 <div className="text-muted-foreground">
-                  Same as shipping address
+                  {adminDetails?.Degree}
                 </div>
               </div>
-            </div>
-            <Separator className="my-4" />
-            <div className="grid gap-3">
-              <div className="font-semibold">Doctor Information</div>
-              <dl className="grid gap-3">
-                <div className="flex items-center justify-between">
-                  <dt className="text-muted-foreground">Doctor</dt>
-                  <dd>Liam Johnson</dd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-muted-foreground">Email</dt>
-                  <dd>
-                    <a to="mailto:">liam@acme.com</a>
-                  </dd>
-                </div>
-                <div className="flex items-center justify-between">
-                  <dt className="text-muted-foreground">Phone</dt>
-                  <dd>
-                    <a to="tel:">+1 234 567 890</a>
-                  </dd>
-                </div>
-              </dl>
             </div>
           </CardContent>
         </Card>

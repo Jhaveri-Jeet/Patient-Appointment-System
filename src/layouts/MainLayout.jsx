@@ -160,7 +160,9 @@ function MainLayout() {
               </nav>
             </SheetContent>
           </Sheet>
-          <CardTitle className="ml-3 w-full">Good Morning 🌞!</CardTitle>
+          <CardTitle className="ml-3 w-full">
+            🌟 Welcome! Let's Streamline Appointments 🌟
+          </CardTitle>
           <div className="relative ml-auto flex-1 md:grow-0">
             {/* <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input

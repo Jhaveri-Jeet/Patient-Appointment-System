@@ -13,6 +13,24 @@ export const autheticationAdmin = async (data) => {
   }
 };
 
+export const fetchAdminDetails = async () => {
+  try {
+    const response = await axios.get(`${prefixUrl}/admin`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const updateAdminDetails = async (data) => {
+  try {
+    const response = await axios.put(`${prefixUrl}/admin/${1}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // Patients APIs
 export const fetchPatients = async () => {
   try {
