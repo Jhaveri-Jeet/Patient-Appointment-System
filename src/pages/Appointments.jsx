@@ -1,5 +1,4 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
 import {
   flexRender,
   getCoreRowModel,
@@ -64,7 +63,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { SkeletonTable } from "@/components/skeletonTable";
 import { SkeletonCard } from "@/components/skeletonCard";
 import { Separator } from "@/components/ui/separator";
 
@@ -137,6 +135,22 @@ export default function Appointments() {
     mutationFn: (data) => createAppointment(data),
     onSuccess: () => {
       queryClient.invalidateQueries(["appointments"]);
+      toast("Appointment Added Successfully!", {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
+    },
+    onError: () => {
+      toast("Error while adding the appointment", {
+        description: formattedDate,
+        action: {
+          label: "Ok",
+          onClick: () => console.log("Ok"),
+        },
+      });
     },
   });
 
@@ -150,6 +164,8 @@ export default function Appointments() {
         SlotId: selectedSlot,
       };
       mutation.mutate(data);
+      setProblem("");
+      setDate("");
     }
   };
 
@@ -169,8 +185,6 @@ export default function Appointments() {
   const handlePrescriptionSubmit = (id) => {
     const prescription = prescriptionRef.current.value;
 
-    // console.log(id);
-    // return;
     if (prescription) {
       const data = {
         Prescription: prescription,
