@@ -179,10 +179,6 @@ export default function Patients() {
         accessorKey: "Gender",
         header: "Gender",
       },
-      {
-        accessorKey: "Address",
-        header: "Address",
-      },
     ],
     []
   );
