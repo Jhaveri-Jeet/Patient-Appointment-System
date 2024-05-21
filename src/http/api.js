@@ -160,9 +160,9 @@ export const fetchSlots = async () => {
   }
 };
 
-export const createSlot = async () => {
+export const createSlot = async (data) => {
   try {
-    const response = await axios.post(`${prefixUrl}/slot`);
+    const response = await axios.post(`${prefixUrl}/slot`, data);
     return response.data;
   } catch (error) {
     console.error(error);
