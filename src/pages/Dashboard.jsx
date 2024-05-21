@@ -316,7 +316,7 @@ export default function Dashboard() {
           <TabsContent value="week">
             <Card x-chunk="dashboard-05-chunk-3">
               <CardHeader className="px-7">
-                <CardTitle>Appointments</CardTitle>
+                <CardTitle>Today's Appointments</CardTitle>
                 <CardDescription>
                   All of your pending appointments.
                 </CardDescription>
