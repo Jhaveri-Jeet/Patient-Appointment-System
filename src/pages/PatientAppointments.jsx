@@ -322,7 +322,13 @@ export default function PatientAppointments() {
               <ul className="grid gap-3">
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Date</span>
-                  <span>{appointmentDate}</span>
+                  <span>
+                    {new Date(appointmentDate).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
                 </li>
                 <li className="flex items-center justify-between">
                   <span className="text-muted-foreground">Problem</span>
