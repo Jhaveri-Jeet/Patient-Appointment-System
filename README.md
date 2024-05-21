@@ -2,6 +2,8 @@
 
 # 🏥 Patient Appointment System - Frontend 📅
 
+[![Watch the video](https://via.placeholder.com/710x399.png?text=Watch+the+video+on+LinkedIn)](https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7198646882674339840?compact=1)
+
 **Harnessing the Power of Modern Web Technologies to Streamline Healthcare Appointments**
 
 [![Vite](https://img.shields.io/badge/built_with-Vite-blueviolet)](https://vitejs.dev/)
