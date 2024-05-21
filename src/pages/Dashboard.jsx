@@ -1,4 +1,4 @@
-import { Copy, MoreVertical, Pencil } from "lucide-react";
+import { Copy, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import {
@@ -21,14 +21,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
@@ -56,7 +48,6 @@ import {
   updateAdminDetails, // Import the update function
 } from "@/http/api";
 
-import { SkeletonTable } from "@/components/skeletonTable";
 import { SkeletonCard } from "@/components/skeletonCard";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -65,6 +56,11 @@ export default function Dashboard() {
   useEffect(() => {
     document.title = "Dashboard";
   }, []);
+
+  const queryClient = useQueryClient();
+  const serviceNameRef = useRef(null);
+  const serviceDescriptionRef = useRef(null);
+  const servicePriceRef = useRef(null);
 
   const currentDate = new Date();
   const formattedDate = currentDate.toLocaleString("en-US", {
@@ -76,11 +72,6 @@ export default function Dashboard() {
     minute: "numeric",
     hour12: true,
   });
-
-  const queryClient = useQueryClient();
-  const serviceNameRef = useRef(null);
-  const serviceDescriptionRef = useRef(null);
-  const servicePriceRef = useRef(null);
 
   const [adminFormData, setAdminFormData] = useState({
     Username: "",
@@ -95,7 +86,6 @@ export default function Dashboard() {
     data: todaysAppointments,
     isLoading: isLoadingAppointments,
     isError: isErrorAppointments,
-    error: errorAppointments,
   } = useQuery({
     queryKey: ["todaysAppointment"],
     queryFn: fetchTodaysAppointments,
@@ -117,7 +107,6 @@ export default function Dashboard() {
     data: totalPatientsData,
     isLoading: isLoadingTotalPatients,
     isError: isErrorTotalPatient,
-    error: errorTotalPatients,
   } = useQuery({
     queryKey: ["totalPatients"],
     queryFn: fetchTotalPatients,
@@ -172,6 +161,17 @@ export default function Dashboard() {
     },
   });
 
+  const handleServiceInput = () => {
+    const name = serviceNameRef.current.value;
+    const description = serviceDescriptionRef.current.value;
+    const price = servicePriceRef.current.value;
+
+    if (name && description && price) {
+      const data = { Name: name, Description: description, Price: price };
+      mutation.mutate(data);
+    }
+  };
+
   const updateMutation = useMutation({
     mutationFn: (data) => updateAdminDetails(data),
     onSuccess: () => {
@@ -194,17 +194,6 @@ export default function Dashboard() {
       });
     },
   });
-
-  const handleServiceInput = () => {
-    const name = serviceNameRef.current.value;
-    const description = serviceDescriptionRef.current.value;
-    const price = servicePriceRef.current.value;
-
-    if (name && description && price) {
-      const data = { Name: name, Description: description, Price: price };
-      mutation.mutate(data);
-    }
-  };
 
   const handleAdminDetailUpdate = () => {
     updateMutation.mutate(adminFormData);

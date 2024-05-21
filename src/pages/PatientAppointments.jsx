@@ -11,7 +11,7 @@ import {
 import { ChevronDown, Copy } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
-import { fetchAppointmentAccToPatients, fetchPatientsById } from "@/http/api";
+import { fetchAppointmentAccToPatients } from "@/http/api";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -59,11 +59,6 @@ export default function PatientAppointments() {
     navigate("/Patients");
   }
 
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["appointments"],
-    queryFn: () => fetchAppointmentAccToPatients(patientId),
-  });
-
   const [sorting, setSorting] = useState([]);
   const [columnFilters, setColumnFilters] = useState([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -82,6 +77,10 @@ export default function PatientAppointments() {
   const [serviceName, setServiceName] = useState("");
   const [servicePrice, setServicePrice] = useState("");
 
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: () => fetchAppointmentAccToPatients(patientId),
+  });
   let index = 1;
   const columns = useMemo(
     () => [

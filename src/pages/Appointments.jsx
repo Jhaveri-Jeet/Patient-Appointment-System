@@ -81,6 +81,19 @@ export default function Appointments() {
   const [servicePrice, setServicePrice] = useState("");
 
   const prescriptionRef = useRef();
+
+  const queryClient = useQueryClient();
+
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [problem, setProblem] = useState("");
+  const [date, setDate] = useState("");
+
+  const [sorting, setSorting] = useState([]);
+  const [columnFilters, setColumnFilters] = useState([]);
+  const [columnVisibility, setColumnVisibility] = useState({});
+  const [rowSelection, setRowSelection] = useState({});
   useEffect(() => {
     document.title = "Appointments";
   }, []);
@@ -131,19 +144,6 @@ export default function Appointments() {
     queryFn: fetchSlots,
     staleTime: 10000,
   });
-
-  const queryClient = useQueryClient();
-
-  const [selectedPatient, setSelectedPatient] = useState(null);
-  const [selectedService, setSelectedService] = useState(null);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [problem, setProblem] = useState("");
-  const [date, setDate] = useState("");
-
-  const [sorting, setSorting] = useState([]);
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [columnVisibility, setColumnVisibility] = useState({});
-  const [rowSelection, setRowSelection] = useState({});
 
   const mutation = useMutation({
     mutationFn: (data) => createAppointment(data),

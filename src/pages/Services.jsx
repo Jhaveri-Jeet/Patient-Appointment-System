@@ -34,6 +34,17 @@ export default function Services() {
     document.title = "Services";
   }, []);
 
+  const currentDate = new Date();
+  const formattedDate = currentDate.toLocaleString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
   const queryClient = useQueryClient();
 
   const [serviceId, setServiceId] = useState("");
@@ -72,17 +83,6 @@ export default function Services() {
         },
       });
     },
-  });
-
-  const currentDate = new Date();
-  const formattedDate = currentDate.toLocaleString("en-US", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
   });
 
   const handleServiceInput = () => {

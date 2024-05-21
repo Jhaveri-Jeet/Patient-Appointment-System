@@ -40,7 +40,7 @@ import {
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { SkeletonCard } from "@/components/skeletonCard";
-import { fetchPatients, createPatient, fetchPatientsById } from "@/http/api";
+import { fetchPatients, createPatient } from "@/http/api";
 import {
   useReactTable,
   flexRender,
