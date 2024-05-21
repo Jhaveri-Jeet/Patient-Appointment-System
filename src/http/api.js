@@ -160,6 +160,24 @@ export const fetchSlots = async () => {
   }
 };
 
+export const createSlot = async () => {
+  try {
+    const response = await axios.post(`${prefixUrl}/slot`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const updateSlot = async (id, data) => {
+  try {
+    const response = await axios.put(`${prefixUrl}/slot/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 // Payment Integration APIs
 export const createPaymentLink = async (data) => {
   try {

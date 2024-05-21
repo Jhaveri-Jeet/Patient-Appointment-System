@@ -31,6 +31,8 @@ import {
   PanelLeft,
   Users2,
   Menu,
+  Timer,
+  TimerIcon,
 } from "lucide-react";
 
 import { Outlet } from "react-router-dom";
@@ -83,6 +85,18 @@ function MainLayout() {
                 </Link>
               </TooltipTrigger>
               <TooltipContent side="right">Services</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  to="/Slots"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <TimerIcon className="h-5 w-5" />
+                  <span className="sr-only">Slots</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Slots</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -142,6 +156,13 @@ function MainLayout() {
                 >
                   <Package className="h-5 w-5" />
                   Services
+                </Link>
+                <Link
+                  to="/Slots"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <TimerIcon className="h-5 w-5" />
+                  Slots
                 </Link>
                 <Link
                   to="/Patients"
